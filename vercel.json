@@ -1,0 +1,8 @@
+{
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  },
+  "buildCommand": "git submodule update --init --remote && node scripts/sync-images.mjs && next build"
+}
