@@ -45,8 +45,9 @@ const satisfy = Satisfy({
 });
 
 export const metadata: Metadata = {
-  title: "Mon Blog",
-  description: "Mon blog personnel",
+  title: "Michel's personal blog",
+  description:
+    "Michel's personal blog about programming, technology, and other stuff.",
 };
 
 export default function RootLayout({
