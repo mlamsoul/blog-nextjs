@@ -8,11 +8,7 @@ import remarkRehype from "remark-rehype";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeStringify from "rehype-stringify";
 
-const contentBase = process.env.BLOG_CONTENT_PATH
-  ? path.resolve(process.cwd(), process.env.BLOG_CONTENT_PATH)
-  : path.join(process.cwd(), "blog-content");
-
-const postsDirectory = path.join(contentBase, "content/posts");
+const postsDirectory = path.join(process.cwd(), "blog-content/content/posts");
 
 export interface PostMeta {
   slug: string;
