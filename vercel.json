@@ -5,5 +5,5 @@
     }
   },
   "regions": ["fra1"],
-  "buildCommand": "git config --global url.\"https://${GIT_SUBMODULE_TOKEN}@github.com/\".insteadOf \"https://github.com/\" && git submodule update --init --recursive && node scripts/sync-images.mjs && next build"
+  "buildCommand": "git config --global url.\"https://${GIT_SUBMODULE_TOKEN}@github.com/\".insteadOf \"https://github.com/\" && git submodule update --init --remote --recursive && node scripts/sync-images.mjs && next build"
 }
