@@ -97,6 +97,7 @@ export async function getPostBySlug(slug: string) {
     date: data.date ?? "",
     tags: data.tags ?? [],
     cover: data.cover ?? null,
+    excerpt: data.excerpt ?? "",
     contentHtml,
   };
 }
