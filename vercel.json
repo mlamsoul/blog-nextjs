@@ -37,6 +37,10 @@
         {
           "key": "Cross-Origin-Resource-Policy",
           "value": "same-origin"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=2592000; includeSubDomains"
         }
       ]
     }

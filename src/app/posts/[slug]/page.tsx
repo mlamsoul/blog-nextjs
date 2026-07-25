@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getPostBySlug, getAllSlugs } from "@/lib/posts";
 import PostContent from "@/components/PostContent";
 
@@ -21,3 +22,29 @@ export default async function Post({
     </main>
   );
 }
+
+// export async function generateMetadata({
+//   params,
+// }: {
+//   params: Promise<{ slug: string }>;
+// }): Promise<Metadata> {
+//   const { slug } = await params;
+//   const post = await getPostBySlug(slug);
+
+//   return {
+//     title: post.title,
+//     description: post.description,
+//     openGraph: {
+//       title: post.title,
+//       description: post.description,
+//       type: "article",
+//       images: post.image
+//         ? [
+//             {
+//               url: post.image,
+//             },
+//           ]
+//         : [],
+//     },
+//   };
+// }

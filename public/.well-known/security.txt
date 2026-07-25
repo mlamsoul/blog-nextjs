@@ -1,0 +1,4 @@
+Contact: mailto:blog@lamsoul.be
+Preferred-Languages: fr,en
+Expires: 2027-07-25T00:00:00Z
+Canonical: https://blog.lamsoul.be/.well-known/security.txt

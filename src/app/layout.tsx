@@ -45,9 +45,32 @@ const satisfy = Satisfy({
 });
 
 export const metadata: Metadata = {
-  title: "Michel's personal blog",
+  title: {
+    default: "Michel's personal blog",
+    template: "%s | Michel's personal blog",
+  },
   description:
     "Michel's personal blog about programming, technology, and other stuff.",
+  openGraph: {
+    type: "website",
+    locale: "fr_BE",
+    url: "https://blog.lamsoul.be",
+    siteName: "Michel's personal blog",
+    title: "Michel's personal blog",
+    description:
+      "Michel's personal blog about programming, technology, and other stuff.",
+    images: [
+      {
+        url: "https://blog.lamsoul.be/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Michel's personal blog",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({
