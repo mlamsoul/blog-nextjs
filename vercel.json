@@ -39,10 +39,6 @@
           "value": "same-origin"
         },
         {
-          "key": "Cross-Origin-Embedder-Policy",
-          "value": "require-corp"
-        },
-        {
           "key": "Strict-Transport-Security",
           "value": "max-age=10886400; includeSubDomains"
         }

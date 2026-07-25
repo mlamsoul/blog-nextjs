@@ -1,12 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Geist,
-  Geist_Mono,
-  Cinzel,
-  Cormorant_Garamond,
-  Dancing_Script,
-  Satisfy,
-} from "next/font/google";
+import { Geist, Geist_Mono, Cinzel } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 
@@ -26,28 +19,13 @@ const cinzel = Cinzel({
   weight: ["400"],
 });
 
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
-  subsets: ["latin"],
-  weight: ["300", "400"],
-});
-
-const dancingScript = Dancing_Script({
-  variable: "--font-dancing",
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
-
-const satisfy = Satisfy({
-  variable: "--font-satisfy",
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
 export const metadata: Metadata = {
   title: {
     default: "Michel's personal blog",
     template: "%s | Michel's personal blog",
+  },
+  icons: {
+    icon: "/images/logo.svg",
   },
   description:
     "Michel's personal blog about programming, technology, and other stuff.",
