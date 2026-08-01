@@ -57,8 +57,8 @@ function buildImageHtml(
   align: string | null,
   width: number | null,
 ): string {
-  const src = `/images/${filename.split("/").pop()}`;
-  const alt = filename;
+  const src = `/images/${filename}`;
+  const alt = filename.split("/").pop() ?? filename;
 
   let style = "";
   if (align === "right") style = "float:right;margin:0 0 1rem 1.5rem;";
