@@ -14,3 +14,6 @@ const dest = join(process.cwd(), "public/images");
 mkdirSync(dest, { recursive: true });
 cpSync(src, dest, { recursive: true });
 console.log("Images synced from", src);
+console.log("BLOG_CONTENT_PATH:", process.env.BLOG_CONTENT_PATH);
+console.log("src:", src);
+console.log("dest:", dest);
