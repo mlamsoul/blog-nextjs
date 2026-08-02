@@ -57,7 +57,7 @@ function buildImageHtml(
   align: string | null,
   width: number | null,
 ): string {
-  const src = `/images/${filename}`;
+  const src = `/images/${filename.replace(/^images\//, "")}`;
   const alt = filename.split("/").pop() ?? filename;
 
   let style = "";
