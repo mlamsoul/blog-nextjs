@@ -5,7 +5,15 @@ interface WikilinkMap {
   [key: string]: string;
 }
 
-const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"];
+const IMAGE_EXTENSIONS = [
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".gif",
+  ".webp",
+  ".svg",
+  ".excalidraw",
+];
 
 function normalize(text: string): string {
   return text
@@ -21,32 +29,75 @@ function isImage(filename: string): boolean {
 }
 
 // Parse ![[image.png#right|200]] → { filename, align, width }
+// function parseImageEmbed(
+//   target: string,
+//   label?: string,
+// ): {
+//   filename: string;
+//   align: string | null;
+//   width: number | null;
+// } {
+//   // Sépare le nom de fichier et le fragment (#right, #left, #center)
+//   const [filepart, fragment] = target.split("#");
+//   const filename = filepart.trim();
+
+//   let align: string | null = null;
+//   let width: number | null = null;
+
+//   if (fragment) {
+//     const alignMatch = fragment.match(/left|right|center/);
+//     if (alignMatch) align = alignMatch[0];
+//     const widthMatch = fragment.match(/\d+/);
+//     if (widthMatch) width = parseInt(widthMatch[0]);
+//   }
+
+//   // Le label peut contenir une largeur : ![[image.png|300]] ou ![[image.png#right|200]]
+//   if (label) {
+//     const widthFromLabel = parseInt(label);
+//     if (!isNaN(widthFromLabel)) width = widthFromLabel;
+//   }
+
+//   return { filename, align, width };
+// }
+
 function parseImageEmbed(
   target: string,
   label?: string,
 ): {
   filename: string;
   align: string | null;
-  width: number | null;
+  width: string | null;
 } {
-  // Sépare le nom de fichier et le fragment (#right, #left, #center)
   const [filepart, fragment] = target.split("#");
-  const filename = filepart.trim();
+
+  // Convertit .excalidraw en .excalidraw.svg
+  let filename = filepart.trim();
+  if (filename.toLowerCase().endsWith(".excalidraw")) {
+    filename = filename + ".svg";
+  }
 
   let align: string | null = null;
-  let width: number | null = null;
+  let width: string | null = null;
 
   if (fragment) {
     const alignMatch = fragment.match(/left|right|center/);
     if (alignMatch) align = alignMatch[0];
-    const widthMatch = fragment.match(/\d+/);
-    if (widthMatch) width = parseInt(widthMatch[0]);
+    const widthMatch = fragment.match(/[\d]+%?/);
+    if (widthMatch)
+      width = widthMatch[0].includes("%")
+        ? widthMatch[0]
+        : `${widthMatch[0]}px`;
   }
 
-  // Le label peut contenir une largeur : ![[image.png|300]] ou ![[image.png#right|200]]
+  // Le label peut contenir une largeur : |300 ou |100%
   if (label) {
-    const widthFromLabel = parseInt(label);
-    if (!isNaN(widthFromLabel)) width = widthFromLabel;
+    const labelTrimmed = label.trim();
+    if (/^\d+%$/.test(labelTrimmed)) {
+      width = labelTrimmed; // "100%"
+    } else {
+      const n = parseInt(labelTrimmed);
+      if (!isNaN(n)) width = `${n}px`;
+    }
   }
 
   return { filename, align, width };
@@ -55,7 +106,7 @@ function parseImageEmbed(
 function buildImageHtml(
   filename: string,
   align: string | null,
-  width: number | null,
+  width: string | null,
 ): string {
   const src = `/images/${filename.replace(/^images\//, "")}`;
   const alt = filename.split("/").pop() ?? filename;
@@ -65,7 +116,7 @@ function buildImageHtml(
   else if (align === "left") style = "float:left;margin:0 1.5rem 1rem 0;";
   else if (align === "center") style = "display:block;margin:0 auto;";
 
-  if (width) style += `width:${width}px;`;
+  if (width) style += `width:${width};`;
 
   return `<img src="${src}" alt="${alt}" style="${style}" />`;
 }
