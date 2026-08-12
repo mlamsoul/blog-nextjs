@@ -1,6 +1,8 @@
 import { getPostBySlug, getAllSlugs } from "@/lib/posts";
 import PostContent from "@/components/PostContent";
+import TableOfContents from "@/components/TableOfContents";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function generateStaticParams() {
@@ -16,11 +18,19 @@ export default async function Post({
   const post = await getPostBySlug(slug);
 
   return (
-    <main>
-      <h1 className="text-4xl font-bold mb-2">{post.title}</h1>
-      <p className="text-sm text-gray-500 mb-6">{post.date}</p>
-      <PostContent html={post.contentHtml} />
-    </main>
+    <div className="relative">
+      <main className="min-w-0">
+        <h1 className="text-4xl font-bold mb-2">{post.title}</h1>
+        <p className="text-sm text-gray-500 mb-8">{post.date}</p>
+        <PostContent html={post.contentHtml} />
+      </main>
+
+      <div className="hidden xl:block absolute top-0 left-full h-full pl-16">
+        <aside className="sticky top-8 w-64 bg-[#1a1a1a] rounded-lg p-4 border border-gray-800">
+          <TableOfContents headings={post.headings} />
+        </aside>
+      </div>
+    </div>
   );
 }
 

@@ -7,6 +7,9 @@ import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeStringify from "rehype-stringify";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import rehypeSlug from "rehype-slug";
 
 const contentBase = process.env.BLOG_CONTENT_PATH
   ? path.resolve(process.cwd(), process.env.BLOG_CONTENT_PATH)
@@ -15,6 +18,12 @@ const contentBase = process.env.BLOG_CONTENT_PATH
 const postsDirectory = path.join(contentBase, "content/posts");
 
 console.log("postsDirectory:", postsDirectory);
+
+export interface Heading {
+  id: string;
+  text: string;
+  level: number;
+}
 
 export interface PostMeta {
   slug: string;
@@ -76,6 +85,21 @@ function buildWikilinkMap(): { [key: string]: string } {
   return map;
 }
 
+function extractHeadingsFromHtml(html: string): Heading[] {
+  const headings: Heading[] = [];
+  const regex = /<h([1-3])[^>]*id="([^"]*)"[^>]*>(.*?)<\/h[1-3]>/g;
+  let match;
+
+  while ((match = regex.exec(html)) !== null) {
+    const level = parseInt(match[1]);
+    const id = match[2];
+    const text = match[3].replace(/<[^>]+>/g, ""); // retire les balises HTML
+    headings.push({ id, text, level });
+  }
+
+  return headings;
+}
+
 export async function getPostBySlug(slug: string) {
   const decodedSlug = decodeURIComponent(slug);
   const fullPath = path.join(postsDirectory, `${decodedSlug}.md`);
@@ -88,14 +112,16 @@ export async function getPostBySlug(slug: string) {
     .use(remarkGfm)
     .use(remarkWikilink, { map: wikilinkMap })
     .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeSlug)
     .use(rehypePrettyCode, {
-      theme: "dark-plus",
+      theme: "material-theme-darker",
       keepBackground: true,
     })
     .use(rehypeStringify, { allowDangerousHtml: true })
     .process(content);
 
   const contentHtml = processedContent.toString();
+  const headings = extractHeadingsFromHtml(contentHtml);
 
   return {
     slug: decodedSlug,
@@ -105,6 +131,7 @@ export async function getPostBySlug(slug: string) {
     cover: data.cover ?? null,
     excerpt: data.excerpt ?? "",
     contentHtml,
+    headings,
   };
 }
 
