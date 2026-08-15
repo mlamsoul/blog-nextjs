@@ -21,7 +21,9 @@ export default async function Post({
     <div className="relative">
       <main className="min-w-0">
         <h1 className="text-4xl font-bold mb-2">{post.title}</h1>
-        <p className="text-sm text-gray-500 mb-8">{post.date}</p>
+        <p className="text-sm text-gray-500 mb-8">
+          {post.date} · {post.readingTime}’ de lecture
+        </p>
         <PostContent html={post.contentHtml} />
       </main>
 

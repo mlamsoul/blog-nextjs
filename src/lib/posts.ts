@@ -7,15 +7,57 @@ import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeStringify from "rehype-stringify";
-import { unified } from "unified";
-import remarkParse from "remark-parse";
 import rehypeSlug from "rehype-slug";
+import { visit } from "unist-util-visit";
+import type { Root, Image } from "mdast";
+
+const AI_WATERMARK_CHARS = [
+  "\u200B", // Zero-Width Space
+  "\u200C", // Zero-Width Non-Joiner
+  "\u200D", // Zero-Width Joiner
+  "\uFEFF", // Zero-Width No-Break Space (BOM)
+  "\u00AD", // Soft Hyphen
+  "\u200E", // Left-to-Right Mark
+  "\u200F", // Right-to-Left Mark
+  "\u2060", // Word Joiner
+  "\u2061", // Function Application
+  "\u2062", // Invisible Times
+  "\u2063", // Invisible Separator
+  "\u2064", // Invisible Plus
+  "\u206A", // Inhibit Symmetric Swapping
+  "\u206B", // Activate Symmetric Swapping
+  "\u206C", // Inhibit Arabic Form Shaping
+  "\u206D", // Activate Arabic Form Shaping
+  "\u206E", // National Digit Shapes
+  "\u206F", // Nominal Digit Shapes
+  "\uE0001", // Language Tag
+];
+
+const COLOR_RESET = "\x1b[0m";
+const COLOR_RED = "\x1b[31m";
+const COLOR_GREEN = "\x1b[32m";
 
 const contentBase = process.env.BLOG_CONTENT_PATH
   ? path.resolve(process.cwd(), process.env.BLOG_CONTENT_PATH)
   : path.join(process.cwd(), "blog-content");
 
 const postsDirectory = path.join(contentBase, "content/posts");
+
+function stripAiWatermarks(content: string): string {
+  const regex = new RegExp(AI_WATERMARK_CHARS.join("|"), "g");
+  const stripped = content.replace(regex, "");
+
+  const removed = content.length - stripped.length;
+
+  if (removed > 0) {
+    console.warn(
+      `${COLOR_RED}[watermark] ⚠ stripped ${removed} invisible character(s) from content${COLOR_RESET}`,
+    );
+  } else {
+    console.log(`${COLOR_GREEN}[watermark] ✓ OK${COLOR_RESET}`);
+  }
+  return stripped;
+}
 
 console.log("postsDirectory:", postsDirectory);
 
@@ -32,6 +74,7 @@ export interface PostMeta {
   tags: string[];
   excerpt?: string;
   cover?: string | null;
+  readingTime: number;
 }
 
 export function getAllPosts(): PostMeta[] {
@@ -42,7 +85,8 @@ export function getAllPosts(): PostMeta[] {
       const slug = fileName.replace(/\.md$/, "");
       const fullPath = path.join(postsDirectory, fileName);
       const fileContents = fs.readFileSync(fullPath, "utf8");
-      const { data } = matter(fileContents);
+      const cleaned = stripAiWatermarks(fileContents);
+      const { data, content } = matter(cleaned);
       return {
         slug,
         title: data.title ?? slug,
@@ -50,6 +94,7 @@ export function getAllPosts(): PostMeta[] {
         tags: data.tags ?? [],
         excerpt: data.excerpt ?? "",
         cover: data.cover ?? null,
+        readingTime: calculateReadingTime(content),
         draft: data.draft ?? false,
       };
     })
@@ -100,17 +145,42 @@ function extractHeadingsFromHtml(html: string): Heading[] {
   return headings;
 }
 
+function remarkImageSize() {
+  return (tree: Root) => {
+    visit(tree, "image", (node: Image) => {
+      const match = node.alt?.match(/^(.*)\|(\d+)$/);
+      if (match) {
+        node.alt = match[1].trim();
+        node.data = node.data || {};
+        node.data.hProperties = {
+          ...(node.data.hProperties || {}),
+          width: match[2],
+          style: `width:${match[2]}px`,
+        };
+      }
+    });
+  };
+}
+
+function calculateReadingTime(content: string): number {
+  const wordsPerMinute = 200;
+  const words = content.trim().split(/\s+/).length;
+  return Math.ceil(words / wordsPerMinute);
+}
+
 export async function getPostBySlug(slug: string) {
   const decodedSlug = decodeURIComponent(slug);
   const fullPath = path.join(postsDirectory, `${decodedSlug}.md`);
   const fileContents = fs.readFileSync(fullPath, "utf8");
-  const { data, content } = matter(fileContents);
+  const { data, content: rawContent } = matter(fileContents);
+  const content = stripAiWatermarks(rawContent);
 
   const wikilinkMap = buildWikilinkMap();
 
   const processedContent = await remark()
     .use(remarkGfm)
     .use(remarkWikilink, { map: wikilinkMap })
+    .use(remarkImageSize)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeSlug)
     .use(rehypePrettyCode, {
@@ -130,6 +200,7 @@ export async function getPostBySlug(slug: string) {
     tags: data.tags ?? [],
     cover: data.cover ?? null,
     excerpt: data.excerpt ?? "",
+    readingTime: calculateReadingTime(content),
     contentHtml,
     headings,
   };

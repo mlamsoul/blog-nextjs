@@ -31,6 +31,21 @@ pre:hover .copy-btn {
   opacity: 1 !important;
 }
 
+.prose table th[align="left"],
+.prose table td[align="left"] {
+  text-align: left;
+}
+
+.prose table th[align="center"],
+.prose table td[align="center"] {
+  text-align: center;
+}
+
+.prose table th[align="right"],
+.prose table td[align="right"] {
+  text-align: right;
+}
+
 .prose h1 {
   font-size: 2.25rem;
   font-weight: 800;
