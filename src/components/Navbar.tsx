@@ -2,9 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 
 function TodayDate() {
-  const date = new Date().toLocaleDateString("en-US", {
-    month: "long",
+  const date = new Date().toLocaleDateString("fr-BE", {
     day: "numeric",
+    month: "long",
     year: "numeric",
   });
   return (
@@ -15,6 +15,7 @@ function TodayDate() {
 }
 
 export default function Navbar() {
+  const isLocal = process.env.NODE_ENV === "development";
   return (
     <nav className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-0 py-4 border-b border-gray-700 mb-8 sm:mb-16">
       <div className="flex items-center gap-4 sm:gap-8">
@@ -42,6 +43,17 @@ export default function Navbar() {
         >
           About
         </Link>
+
+        {isLocal && (
+          <a
+            href="https://blog.lamsoul.be"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-(family-name:--font-satisfy) text-lg text-yellow-600 hover:text-yellow-400 transition-colors"
+          >
+            ↗ prod
+          </a>
+        )}
       </div>
 
       <div className="hidden sm:block">

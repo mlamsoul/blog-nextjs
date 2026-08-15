@@ -11,7 +11,13 @@ export default function PostCard({ post }: { post: PostMeta }) {
         {post.title}
       </Link>
       <p className="text-sm text-gray-500">
-        {post.date} · {post.readingTime}’ de lecture
+        Publié le{" "}
+        {new Date(post.date).toLocaleDateString("fr-BE", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}{" "}
+        · {post.readingTime}’ de lecture
       </p>
       {post.excerpt && <p className="mt-1 text-gray-600">{post.excerpt}</p>}
       {post.tags && post.tags.length > 0 && (

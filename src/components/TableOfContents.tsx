@@ -2,8 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { Heading } from "@/lib/posts";
+import Link from "next/link";
 
-export default function TableOfContents({ headings }: { headings: Heading[] }) {
+export default function TableOfContents({
+  headings,
+  title,
+}: {
+  headings: Heading[];
+  title: string;
+}) {
   const [activeId, setActiveId] = useState<string>("");
 
   useEffect(() => {
@@ -32,7 +39,7 @@ export default function TableOfContents({ headings }: { headings: Heading[] }) {
     <nav className="hidden xl:block w-56 shrink-0">
       <div className="sticky top-8">
         <p className="text-xs uppercase tracking-widest text-gray-500 mb-4">
-          On this page
+          {title}
         </p>
         <ul className="space-y-2">
           {headings.map((heading) => (
