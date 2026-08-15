@@ -2,6 +2,7 @@ import { getPostBySlug, getAllSlugs } from "@/lib/posts";
 import PostContent from "@/components/PostContent";
 import TableOfContents from "@/components/TableOfContents";
 import Link from "next/link";
+import { Clock } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -22,14 +23,20 @@ export default async function Post({
     <div className="relative">
       <main className="min-w-0">
         <h1 className="text-4xl font-bold mb-2">{post.title}</h1>
-        <p className="text-sm text-gray-500 mb-8">
-          Publié le{" "}
-          {new Date(post.date).toLocaleDateString("fr-BE", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}{" "}
-          · {post.readingTime}’ de lecture
+        <p className="flex items-center gap-2 text-sm text-gray-500 mb-8">
+          <span>
+            Publié le{" "}
+            {new Date(post.date).toLocaleDateString("fr-BE", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </span>
+          <span className="mx-1">·</span>
+          <span className="inline-flex items-center gap-1">
+            <Clock size={15} />
+            {post.readingTime}’ de lecture
+          </span>
         </p>
         <PostContent html={post.contentHtml} />
       </main>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PostMeta } from "@/lib/posts";
+import { Clock } from "lucide-react";
 
 export default function PostCard({ post }: { post: PostMeta }) {
   return (
@@ -10,14 +11,20 @@ export default function PostCard({ post }: { post: PostMeta }) {
       >
         {post.title}
       </Link>
-      <p className="text-sm text-gray-500">
-        Publié le{" "}
-        {new Date(post.date).toLocaleDateString("fr-BE", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        })}{" "}
-        · {post.readingTime}’ de lecture
+      <p className="flex items-center gap-2 text-sm text-gray-500">
+        <span>
+          Publié le{" "}
+          {new Date(post.date).toLocaleDateString("fr-BE", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}
+        </span>
+        <span className="mx-1">·</span>
+        <span className="inline-flex items-center gap-1">
+          <Clock size={15} />
+          {post.readingTime}’ de lecture
+        </span>
       </p>
       {post.excerpt && <p className="mt-1 text-gray-600">{post.excerpt}</p>}
       {post.tags && post.tags.length > 0 && (
