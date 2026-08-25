@@ -208,7 +208,8 @@ export async function getPostBySlug(slug: string) {
 
 export function getAllSlugs(): string[] {
   const fileNames = fs.readdirSync(postsDirectory);
-  return fileNames
+  const slugs = fileNames
     .filter((fileName) => fileName.endsWith(".md"))
     .map((fileName) => fileName.replace(/\.md$/, ""));
+  return slugs;
 }

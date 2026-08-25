@@ -7,18 +7,17 @@ function TodayDate() {
     month: "long",
     year: "numeric",
   });
-  return (
-    <span className="font-(family-name:--font-satisfy) text-lg tracking-widest text-gray-300">
-      {date}
-    </span>
-  );
+  return <span>{date}</span>;
 }
 
 export default function Navbar() {
   const isLocal = process.env.NODE_ENV === "development";
+  const hoverWhite = "hover:text-white transition-colors";
+  const hoverYellow = "hover:text-yellow-400 transition-colors";
+
   return (
-    <nav className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-0 py-4 border-b border-gray-700 mb-8 sm:mb-16">
-      <div className="flex items-center gap-4 sm:gap-8">
+    <nav className="font-(family-name:--font-satisfy) text-lg  text-gray-300 tracking-widest flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-0 py-4 border-b border-gray-700 mb-8 sm:mb-16">
+      <div className="flex items-center gap-4 sm:gap-8 transition-colors">
         <Link href="/">
           <Image
             src="/images/logo.svg"
@@ -30,26 +29,19 @@ export default function Navbar() {
           />
         </Link>
 
-        <Link
-          href="/"
-          className="font-(family-name:--font-satisfy) text-lg tracking-widest hover:text-white text-gray-300 transition-colors"
-        >
+        <Link href="/" className={hoverWhite}>
           Blog
         </Link>
-
-        <Link
-          href="/about"
-          className="font-(family-name:--font-satisfy) text-lg tracking-widest hover:text-white text-gray-300 transition-colors"
-        >
+        <Link href="/about" className={hoverWhite}>
           About
         </Link>
 
         {isLocal && (
           <a
-            href="https://blog.lamsoul.be"
+            href={process.env.NEXT_PUBLIC_PROD_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-(family-name:--font-satisfy) text-lg text-yellow-600 hover:text-yellow-400 transition-colors"
+            className={`text-yellow-600 ${hoverYellow}`}
           >
             ↗ prod
           </a>

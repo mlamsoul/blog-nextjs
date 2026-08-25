@@ -3,6 +3,7 @@ import PostContent from "@/components/PostContent";
 import TableOfContents from "@/components/TableOfContents";
 import Link from "next/link";
 import { Clock } from "lucide-react";
+import Comments from "@/components/Comments";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -18,7 +19,10 @@ export default async function Post({
 }) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
-
+  const headingsWithComments = [
+    ...post.headings,
+    { id: "commentaires", text: "Commentaires", level: 2 },
+  ];
   return (
     <div className="relative">
       <main className="min-w-0">
@@ -39,6 +43,10 @@ export default async function Post({
           </span>
         </p>
         <PostContent html={post.contentHtml} />
+        <div className="prose prose-neutral dark:prose-invert max-w-none">
+          <h2 id="commentaires">Commentaires</h2>
+        </div>
+        <Comments title={post.title} />
       </main>
 
       <div className="hidden xl:block absolute top-0 left-full h-full pl-16">
@@ -52,7 +60,10 @@ export default async function Post({
           </Link>
 
           <aside className="bg-[#1a1a1a] rounded-lg p-4 border border-gray-800">
-            <TableOfContents headings={post.headings} title={post.title} />
+            <TableOfContents
+              headings={headingsWithComments}
+              title={post.title}
+            />
           </aside>
         </div>
       </div>

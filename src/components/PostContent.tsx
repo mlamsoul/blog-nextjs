@@ -19,11 +19,17 @@ export default function PostContent({ html }: { html: string }) {
       const code = pre.querySelector("code");
       const text = code?.innerText ?? "";
 
+      // Wrapper autour du pre pour sortir le bouton du scroll
+      const wrapper = document.createElement("div");
+      wrapper.style.cssText = "position:relative;";
+      pre.parentNode?.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+
+      // Bouton dans le wrapper, pas dans le pre
       const mount = document.createElement("div");
       mount.className = "copy-btn-mount";
       mount.style.cssText = "position:absolute;top:8px;right:8px;z-index:10;";
-      pre.style.position = "relative";
-      pre.appendChild(mount);
+      wrapper.appendChild(mount);
 
       try {
         createRoot(mount).render(<CopyButton text={text} />);

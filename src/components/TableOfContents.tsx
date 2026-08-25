@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Heading } from "@/lib/posts";
-import Link from "next/link";
 
 export default function TableOfContents({
   headings,
@@ -11,7 +10,9 @@ export default function TableOfContents({
   headings: Heading[];
   title: string;
 }) {
-  const [activeId, setActiveId] = useState<string>("");
+  const [activeId, setActiveId] = useState<string>(
+    headings.length > 0 ? headings[0].id : "",
+  );
 
   useEffect(() => {
     const observer = new IntersectionObserver(
