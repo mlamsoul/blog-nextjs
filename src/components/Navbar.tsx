@@ -33,7 +33,10 @@ export default function Navbar() {
           Blog
         </Link>
         <Link href="/about" className={hoverWhite}>
-          About
+          À propos
+        </Link>
+        <Link href="/legal" className={hoverWhite}>
+          Légal
         </Link>
 
         {isLocal && (

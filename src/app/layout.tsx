@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Cinzel } from "next/font/google";
+import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 
@@ -66,6 +67,7 @@ export default function RootLayout({
           <div className="w-full max-w-5xl bg-[#1a1a1a] rounded-xl shadow-xl px-8 py-10 min-h-screen">
             <Navbar />
             {children}
+            <Footer />
           </div>
         </div>
       </body>
